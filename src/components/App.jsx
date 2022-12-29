@@ -1,11 +1,11 @@
-import { ContactForm } from './ContactForm/ContactForm';
 import { MainContainer } from './Main/Main';
+import { ContactForm } from './ContactForm/ContactForm';
 import { ContactList } from './ContactList/ContactList';
-import { useSelector } from 'react-redux';
-
+import { useGetContactsQuery } from 'redux/contactsApi';
+// 
 export const App = () => {
-  const contacts = useSelector(state => state.contacts.items);
-
+  const { data, error, isLoading } = useGetContactsQuery();
+  
   return (
     <MainContainer title="Phonebook">
       <h1>Phonebook</h1>
@@ -13,11 +13,12 @@ export const App = () => {
       <ContactForm />
       <h2>Contacts</h2>
 
-      {contacts.length > 0 ? (
+      {!isLoading && data.length > 0 ? (
         <ContactList name="Contacts" />
       ) : (
         <p>Phonebook is empty</p>
       )}
+      {error && <p>Sorry.. something went wrong. Please, try again.</p>}
     </MainContainer>
   );
 };

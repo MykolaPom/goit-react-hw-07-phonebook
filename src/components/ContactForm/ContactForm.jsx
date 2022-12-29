@@ -1,15 +1,18 @@
 import { useState } from 'react';
-import { nanoid } from 'nanoid/non-secure';
-import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from 'redux/contactsSlice';
+import { useGetContactsQuery, useAddContactMutation } from 'redux/contactsApi';
+import toast from 'react-hot-toast';
 
 import { Form, Input, Paragraph, ButtonSubmit } from './ContactForm.styled';
 
 export const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
-  const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts.items);
+
+  const { data: contacts } = useGetContactsQuery();
+  // consoile.log({ data: contacts });
+
+  const [addContact] = useAddContactMutation();
+  // console.log(result); // повертає статус мутації
 
   const handleChange = e => {
     switch (e.currentTarget.name) {
@@ -29,18 +32,21 @@ export const ContactForm = () => {
     setNumber('');
   };
 
-  const formSubmitHandle = data => {
-    const id = nanoid();
+  const formSubmitHandle = async data => {
     if (contacts.filter(contact => contact.name === data.name).length > 0) {
-      alert(`${data.name} is already in contacts`);
+      toast.warning(`${data.name} is already exists`);
       return;
     }
-    data.id = id;
-
-    dispatch(addContact(data));
+    try {
+      await addContact(data);
+      toast.success('Contact is added successfully!');
+    } catch (error) {
+      toast.error('Add contact failed');
+      // console.log(error);
+    }
   };
 
-  const clickOnBtnSubmit = e => {
+  const clickOnBtnSubmit = async e => {
     e.preventDefault();
     formSubmitHandle({ name, number });
     reset();

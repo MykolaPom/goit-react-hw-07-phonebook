@@ -1,26 +1,34 @@
-import { ContactsItem, ButtonDelete, Input } from './ContactList.styled';
+import {PropTypes} from 'prop-types';
 
-import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
-import { removeContact } from 'redux/contactsSlice';
-import { filterContacts } from 'redux/contactsSlice';
+import { ContactsItem, ButtonDelete, Input } from './ContactList.styled';
+import { useGetContactsQuery } from 'redux/contactsApi';
+import {useDeleteContactMutation} from 'redux/contactsApi'
+import { useSelector, useDispatch } from 'react-redux';
+import { filterContacts } from 'redux/filterSlice';
 
 export const ContactList = ({ name }) => {
-  const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts.items);
-  const filter = useSelector(state => state.contacts.filter);
+  const { data, error, isLoading } = useGetContactsQuery();
+  console.log('data', data);
+  console.log('error', error);
+  console.log('isLoading', isLoading);
+
+  const filter = useSelector(state => state.filter);
   const normolizeFilter = filter.toLowerCase();
-  const visibleContacts = contacts.filter(contact =>
+  const visibleContacts = data.filter(contact =>
     contact.name.toLowerCase().includes(normolizeFilter)
   );
 
-    const handleChange = e => {
-      dispatch(filterContacts(e.currentTarget.value));
-    };
+  const [deleteContact, result] = useDeleteContactMutation();
+  console.log(result);
+
+  const dispatch = useDispatch();
+  const handleChange = e => {
+    dispatch(filterContacts(e.currentTarget.value));
+  };
 
   return (
     <ContactsItem>
-      <p>{name}</p>
+      {/* <p>{name}</p> */}
       <label title="Find contacts by name">
         <Input
           type="text"
@@ -31,16 +39,17 @@ export const ContactList = ({ name }) => {
         />
       </label>
       <ul>
-        {visibleContacts.map(contact => (
-          <li key={contact.id}>
+        {visibleContacts.map(data => (
+          <li key={data.id}>
             <span>
-              {contact.name} {contact.number}
+              {data.name}: {data.number}
             </span>
             <ButtonDelete
               type="button"
               name="Delete"
-              id={contact.id}
-              onClick={() => dispatch(removeContact(contact.id))}
+              id={data.id}
+              onClick={() => deleteContact(data.id)}
+              disabled={result.isLoading}
             >
               Delete
             </ButtonDelete>
@@ -54,4 +63,3 @@ export const ContactList = ({ name }) => {
 ContactList.propTypes = {
   name: PropTypes.string.isRequired,
 };
-
