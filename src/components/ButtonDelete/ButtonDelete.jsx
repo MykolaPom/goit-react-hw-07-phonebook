@@ -4,7 +4,7 @@ import { ButtonDeleteStyled } from './ButtonDelete.styled';
 
 export const ButtonDelete = ({ id }) => {
   const [deleteContact, { isLoading }] = useDeleteContactMutation();
-  console.log(isLoading);
+  // console.log(isLoading);
 
   return (
     <ButtonDeleteStyled

@@ -34,15 +34,13 @@ export const ContactForm = () => {
 
   const formSubmitHandle = async data => {
     if (contacts.filter(contact => contact.name === data.name).length > 0) {
-      toast.error(`${data.name} is already exists`);
       return;
     }
     try {
       await addContact(data);
-      toast.success('Contact is added successfully!');
+      toast.success('Contact added');
     } catch (error) {
-      toast.error('Add contact failed');
-      // console.log(error);
+       toast.error('Failed');
     }
   };
 

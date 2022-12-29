@@ -9,7 +9,7 @@ import { ButtonDelete } from 'components/ButtonDelete/ButtonDelete';
 
 export const ContactList = () => {
   const { data } = useGetContactsQuery();
-  console.log('data', data);
+  // console.log('data', data);
   // console.log('error', error);
   // console.log('isLoading', isLoading);
 
