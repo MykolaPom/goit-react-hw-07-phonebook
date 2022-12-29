@@ -1,16 +1,17 @@
-import {PropTypes} from 'prop-types';
+import { PropTypes } from 'prop-types';
 
-import { ContactsItem, ButtonDelete, Input } from './ContactList.styled';
+import { ContactsItem, Input } from './ContactList.styled';
 import { useGetContactsQuery } from 'redux/contactsApi';
-import {useDeleteContactMutation} from 'redux/contactsApi'
+// import { useDeleteContactMutation } from 'redux/contactsApi';
 import { useSelector, useDispatch } from 'react-redux';
 import { filterContacts } from 'redux/filterSlice';
+import { ButtonDelete } from 'components/ButtonDelete/ButtonDelete';
 
-export const ContactList = ({ name }) => {
-  const { data, error, isLoading } = useGetContactsQuery();
+export const ContactList = () => {
+  const { data } = useGetContactsQuery();
   console.log('data', data);
-  console.log('error', error);
-  console.log('isLoading', isLoading);
+  // console.log('error', error);
+  // console.log('isLoading', isLoading);
 
   const filter = useSelector(state => state.filter);
   const normolizeFilter = filter.toLowerCase();
@@ -18,8 +19,8 @@ export const ContactList = ({ name }) => {
     contact.name.toLowerCase().includes(normolizeFilter)
   );
 
-  const [deleteContact, result] = useDeleteContactMutation();
-  console.log(result);
+  // const [deleteContact, { isLoading }] = useDeleteContactMutation();
+  // console.log(isLoading);
 
   const dispatch = useDispatch();
   const handleChange = e => {
@@ -44,15 +45,16 @@ export const ContactList = ({ name }) => {
             <span>
               {data.name}: {data.number}
             </span>
-            <ButtonDelete
+            <ButtonDelete id={data.id} />
+            {/* <ButtonDelete
               type="button"
               name="Delete"
               id={data.id}
               onClick={() => deleteContact(data.id)}
-              disabled={result.isLoading}
+              disabled={isLoading}
             >
-              Delete
-            </ButtonDelete>
+              {isLoading ? 'Deleting...' : 'Delete'}
+            </ButtonDelete> */}
           </li>
         ))}
       </ul>

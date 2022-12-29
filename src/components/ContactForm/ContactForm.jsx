@@ -34,7 +34,7 @@ export const ContactForm = () => {
 
   const formSubmitHandle = async data => {
     if (contacts.filter(contact => contact.name === data.name).length > 0) {
-      toast.warning(`${data.name} is already exists`);
+      toast.error(`${data.name} is already exists`);
       return;
     }
     try {
