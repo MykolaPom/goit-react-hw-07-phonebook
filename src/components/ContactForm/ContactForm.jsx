@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useGetContactsQuery, useAddContactMutation } from 'redux/contactsApi';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 
 import { Form, Input, Paragraph, ButtonSubmit } from './ContactForm.styled';
 
@@ -34,13 +34,13 @@ export const ContactForm = () => {
 
   const formSubmitHandle = async data => {
     if (contacts.filter(contact => contact.name === data.name).length > 0) {
+      toast.error(`${name} is already exists`);
       return;
     }
     try {
       await addContact(data);
-      toast.success('Contact added');
+      toast.success('Contact has been added successfully');
     } catch (error) {
-       toast.error('Failed');
     }
   };
 
@@ -79,6 +79,7 @@ export const ContactForm = () => {
         />
       </label>
       <ButtonSubmit type="submit">Add contact</ButtonSubmit>
+      <Toaster position="top-right" />
     </Form>
   );
 };
